@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class AuthTest extends TestCase
 {
-    private $prefix = "/v1/members/";
+    private $prefix = "/v1/users/";
     public $user;
     public $token;
     public $headers;
@@ -52,12 +52,7 @@ class AuthTest extends TestCase
         $this->emailExists();
         $this->emailExistsInvalid();
 
-        // Nickname exists
-        $this->nicknameExists();
-        $this->nicknameExistsInvalid();
-
         // Signdrop
-        $this->signdropSurveyList();
         $this->signdropWhenGhost();
         $this->signdropInvalid();
         $this->signdropSuccess();
@@ -65,16 +60,16 @@ class AuthTest extends TestCase
 
     public function signinSuccess(){
         $this->json('POST', $this->prefix."signin" , [
-            'email' => 'test@sandwhichi.com',
-            'password' => '1234qwer',
+            'email' => $this->user->email,
+            'password' => env('COMMON_PASSWORD'),
         ])
             ->assertResponseStatus(200);
         Auth::logout();
     }
     public function signinWhenUser(){
         $this->json('POST', $this->prefix."signin" , [
-            'email' => 'test@sandwhichi.com',
-            'password' => '1234qwer',
+            'email' => $this->user->email,
+            'password' => env('COMMON_PASSWORD'),
         ],$this->headers)
             ->assertResponseStatus(403);
         Auth::logout();
@@ -121,11 +116,11 @@ class AuthTest extends TestCase
 
     public function signupSuccess(){
         $randStr = Str::random(20);
+        $password = "password123!";
         $this->json('POST', $this->prefix."signup" , [
               "email" => $randStr."@sandwhichi.com",
-              "password" => $randStr,
-              "nickname" => $randStr,
-              "newsletterAccepted" => true,
+              "password" => $password,
+              "emailAccepted" => true,
               "termsOfServiceAccepted" => true
         ])
             ->assertResponseStatus(200);
@@ -134,13 +129,17 @@ class AuthTest extends TestCase
 
 
     public function signupWhenUser(){
+        $user = factory(App\Models\User::class)->create();
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($this->user);
+
         $this->json('POST', $this->prefix."signup" , [
             "email" => "nononoenofnd@sandwhichi.com",
             "password" => "password1234!",
-            "nickname" => "usernicks",
-            "newsletterAccepted" => true,
+            "emailAccepted" => true,
             "termsOfServiceAccepted" => true
-        ],$this->headers)
+        ],[
+            'Authorization' => 'Bearer ' . $token
+        ])
             ->assertResponseStatus(403);
         Auth::logout();
     }
@@ -149,32 +148,27 @@ class AuthTest extends TestCase
         $this->json('POST', $this->prefix."signup" , [
             "email" => "nonosandwhichi.com",
             "password" => "pass!",
-            "nickname" => "admin",
-            "newsletterAccepted" => false,
-            "termsOfServiceAccepted" => false,
+            "emailAccepted" => true,
+            "termsOfServiceAccepted" => true
         ])
             ->assertResponseStatus(422);
         Auth::logout();
     }
 
-    public function signdropSurveyList(){
-        $this->json('GET', $this->prefix."signdrop/survey/list" , [
-        ],$this->headers)
-            ->assertResponseStatus(200);
-        Auth::logout();
-    }
-
     public function signdropSuccess(){
+        $user = factory(App\Models\User::class)->create();
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($this->user);
+
         $this->json('DELETE', $this->prefix."signdrop" , [
-            "answerIds" => [1,7]
-        ],$this->headers)
+        ],[
+            'Authorization' => 'Bearer ' . $token
+        ])
             ->assertResponseStatus(200);
         // Don't logout
     }
 
     public function signdropWhenGhost(){
         $this->json('DELETE', $this->prefix."signdrop" , [
-            "answerIds" => [1,7]
         ])
             ->assertResponseStatus(403);
         Auth::logout();
@@ -182,18 +176,6 @@ class AuthTest extends TestCase
 
     public function signdropInvalid(){
         $this->json('DELETE', $this->prefix."signdrop" , [
-        ],$this->headers)
-            ->assertResponseStatus(422);
-        Auth::logout();
-
-        $this->json('DELETE', $this->prefix."signdrop" , [
-            "answerIds" => 100
-        ],$this->headers)
-            ->assertResponseStatus(422);
-        Auth::logout();
-
-        $this->json('DELETE', $this->prefix."signdrop" , [
-            "answerIds" => [1,7]
         ],$this->invalidHeaders)
             ->assertResponseStatus(401);
         Auth::logout();
@@ -221,33 +203,6 @@ class AuthTest extends TestCase
 
     public function emailExistsInvalid(){
         $this->json('POST', $this->prefix."exists/email" , [
-        ])
-            ->assertResponseStatus(422);
-        Auth::logout();
-    }
-
-
-    public function nicknameExists(){
-        $this->json('POST', $this->prefix."exists/nickname" , [
-            "nickname" => "Admin"
-        ])
-            ->assertResponseStatus(200)
-            ->seeJson([
-                "result" => true,
-            ]);
-
-        $this->json('POST', $this->prefix."exists/nickname" , [
-            "nickname" => "AdminAdminAdmin"
-        ])
-            ->assertResponseStatus(200)
-            ->seeJson([
-                "result" => false,
-            ]);
-        Auth::logout();
-    }
-
-    public function nicknameExistsInvalid(){
-        $this->json('POST', $this->prefix."exists/nickname" , [
         ])
             ->assertResponseStatus(422);
         Auth::logout();

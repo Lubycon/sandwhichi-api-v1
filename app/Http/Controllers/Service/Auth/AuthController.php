@@ -117,7 +117,7 @@ class AuthController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function create(AuthSignupRequest $request)
+    protected function signup(AuthSignupRequest $request)
     {
         $signupData = User::bindSignupData($request);
 
@@ -150,7 +150,7 @@ class AuthController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function destroy(AuthSigndropRequest $request)
+    protected function signdrop(AuthSigndropRequest $request)
     {
         if($this->user->delete()){
             JWTAuth::invalidate();

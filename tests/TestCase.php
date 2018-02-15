@@ -9,12 +9,6 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     protected $baseUrl = null;
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        $this->baseUrl = env('APP_HOST');
-    }
-
     /**
      * Creates the application.
      *

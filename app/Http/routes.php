@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome', ['ifYouWantPassData' => 'put in here', 'and' => 'more']);
 });
 
-Route::group(['prefix' => '/v1', 'domain' => env('APP_HOST')], function () {
+Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/users/'], function () {
         Route::post('signin', 'Service\Auth\AuthController@signin');
         Route::put('signout', 'Service\Auth\AuthController@signout');
