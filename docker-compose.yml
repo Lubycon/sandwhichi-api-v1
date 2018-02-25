@@ -1,0 +1,22 @@
+version: '2'
+services:
+    nginx:
+        links:
+            - api
+
+    api:
+        domainname: ${API_DOMAIN_NAME}
+        hostname: ${APP_ENV}-api
+        build:
+            context: ${API_DOCKERFILE_DIR}/docker
+        links:
+            - database
+            - redis
+        ports:
+            - "2525:2525" # SMTP - mailtrap
+            - "9000:9000"
+        volumes:
+            - "${API_DOCKERFILE_DIR}:${API_PROJECT_ROOT_PATH}"
+        working_dir: ${API_PROJECT_ROOT_PATH}
+        restart: always
+        command: sh /var/entrypoint/${APP_ENV}.sh ${API_PROJECT_ROOT_PATH} ${BITBUCKET_TEAM_NAME} ${BITBUCKET_USERNAME} ${BITBUCKET_PASSWORD}
