@@ -47,9 +47,13 @@ class AuthTest extends TestCase
         $this->signupSuccess();
         $this->signupWhenUser();
         $this->signupInvalid();
+        $this->signupInvalidPassword();
+        $this->signupInvalidNotAcceptTermsOfService();
+        $this->signupInvalidNotAcceptPrivacyPolicy();
 
         // Email exists
         $this->emailExists();
+        $this->emailExistsNoEmail();
         $this->emailExistsInvalid();
 
         // Signdrop
@@ -121,7 +125,8 @@ class AuthTest extends TestCase
               "email" => $randStr."@sandwhichi.com",
               "password" => $password,
               "emailAccepted" => true,
-              "termsOfServiceAccepted" => true
+              "termsOfServiceAccepted" => true,
+              "privacyPolicyAccepted" => true,
         ])
             ->assertResponseStatus(200);
         Auth::logout();
@@ -136,7 +141,8 @@ class AuthTest extends TestCase
             "email" => "nononoenofnd@sandwhichi.com",
             "password" => "password1234!",
             "emailAccepted" => true,
-            "termsOfServiceAccepted" => true
+            "termsOfServiceAccepted" => true,
+            "privacyPolicyAccepted" => true,
         ],[
             'Authorization' => 'Bearer ' . $token
         ])
@@ -149,7 +155,47 @@ class AuthTest extends TestCase
             "email" => "nonosandwhichi.com",
             "password" => "pass!",
             "emailAccepted" => true,
-            "termsOfServiceAccepted" => true
+            "termsOfServiceAccepted" => true,
+            "privacyPolicyAccepted" => true,
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
+    }
+
+    public function signupInvalidPassword(){
+        $randStr = Str::random(20);
+        $this->json('POST', $this->prefix."signup" , [
+            "email" => $randStr."@sandwhichi.com",
+            "password" => "password",
+            "emailAccepted" => true,
+            "termsOfServiceAccepted" => true,
+            "privacyPolicyAccepted" => true,
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
+    }
+
+    public function signupInvalidNotAcceptTermsOfService(){
+        $randStr = Str::random(20);
+        $this->json('POST', $this->prefix."signup" , [
+            "email" => $randStr."@sandwhichi.com",
+            "password" => "pass!",
+            "emailAccepted" => true,
+            "termsOfServiceAccepted" => false,
+            "privacyPolicyAccepted" => true,
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
+    }
+
+    public function signupInvalidNotAcceptPrivacyPolicy(){
+        $randStr = Str::random(20);
+        $this->json('POST', $this->prefix."signup" , [
+            "email" => $randStr."@sandwhichi.com",
+            "password" => "pass!",
+            "emailAccepted" => true,
+            "termsOfServiceAccepted" => true,
+            "privacyPolicyAccepted" => false,
         ])
             ->assertResponseStatus(422);
         Auth::logout();
@@ -201,8 +247,16 @@ class AuthTest extends TestCase
     }
 
 
+    public function emailExistsNoEmail(){
+        $this->json('POST', $this->prefix."exists/email" , [
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
+    }
+
     public function emailExistsInvalid(){
         $this->json('POST', $this->prefix."exists/email" , [
+            "email" => "flkdsjflkassandwhichi.com"
         ])
             ->assertResponseStatus(422);
         Auth::logout();
