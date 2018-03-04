@@ -9,7 +9,7 @@ class CreateAccessTokensTable extends Migration {
 	{
 		Schema::create('access_tokens', function(Blueprint $table) {
 			$table->increments('id');
-			$table->integer('user_id');
+			$table->integer('user_id')->unsigned();
 			$table->string('token');
 			$table->timestamp('expired_at');
 			$table->timestamps();
