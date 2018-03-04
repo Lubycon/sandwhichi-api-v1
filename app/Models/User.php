@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Auth;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 /**
@@ -103,6 +104,21 @@ class User extends Model implements AuthenticatableContract,
             "email_accepted" => $request->emailAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
             "privacy_policy_accepted" => $request->privacyPolicyAccepted,
+        ];
+    }
+
+    public static function CreateUser($request){
+        $signupData = User::bindSignupData($request);
+        return User::create($signupData);
+    }
+
+    public function getTokens(){
+        $access_token = JWTAuth::fromUser($this);
+        $auth = JWTAuth::setToken($access_token)->authenticate();
+        $refresh_token = RefreshToken::createToken($access_token);
+        return [
+            'access_token' => $access_token,
+            'refresh_token' => $refresh_token,
         ];
     }
 

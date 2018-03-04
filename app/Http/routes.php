@@ -20,9 +20,20 @@ Route::get('/', function () {
 
 Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/users/'], function () {
-        Route::post('signin', 'Service\Auth\AuthController@signin');
+        Route::group(['prefix' => '/signin/'], function () {
+            Route::post('', 'Service\Auth\AuthController@signin');
+            Route::post('google', 'Service\Auth\AuthController@googleSignin');
+            Route::post('naver', 'Service\Auth\AuthController@naverSignin');
+        });
+
         Route::put('signout', 'Service\Auth\AuthController@signout');
-        Route::post('signup', 'Service\Auth\AuthController@signup');
+
+        Route::group(['prefix' => '/signup/'], function () {
+            Route::post('', 'Service\Auth\AuthController@signup');
+            Route::post('google', 'Service\Auth\AuthController@googleSignup');
+            Route::post('naver', 'Service\Auth\AuthController@naverSignup');
+        });
+
         Route::delete('signdrop', 'Service\Auth\AuthController@signdrop');
         Route::get('token/refresh', 'Service\Auth\AuthController@refreshAccessToken');
 

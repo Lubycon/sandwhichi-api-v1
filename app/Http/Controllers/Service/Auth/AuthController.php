@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Service\Auth;
 
 // Global
+use App\Models\SocialGoogleAccount;
 use Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Auth;
@@ -23,6 +24,8 @@ use App\Http\Requests\Service\Auth\AuthSignupRequest;
 use App\Http\Requests\Service\Auth\AuthSigndropRequest;
 use App\Http\Requests\Service\Auth\AuthSignoutRequest;
 use App\Http\Requests\Service\Auth\AuthEmailExistRequest;
+use App\Http\Requests\Service\Auth\AuthGoogleSignupRequest;
+use App\Http\Requests\Service\Auth\AuthGoogleSigninRequest;
 
 // Exceptions
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -71,12 +74,38 @@ class AuthController extends Controller
 
         $this->user = Auth::user();
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
-        $refresh_token = RefreshToken::createToken($access_token);
+        return response()->success($this->user->getTokens());
+    }
 
-        return response()->success([
-            'access_token' => $access_token,
-            'refresh_token' => $refresh_token,
-        ]);
+    /**
+     * @SWG\Post(
+     *   path="/users/signin/google",
+     *   summary="signin",
+     *   operationId="signin_google",
+     *   tags={"/Users/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign in into web site bia google plus",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/signin/google")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function googleSignin(AuthGoogleSigninRequest $request)
+    {
+        $socialPayload = SocialGoogleAccount::GetPayload($request->id_token);
+        if (!$socialPayload)
+            return Abort::Error('0063');
+
+        $this->user = SocialGoogleAccount::FindUserByPayload($socialPayload);
+
+        if($this->user !== null){
+            return response()->success($this->user->getTokens());
+        }
+
+        return Abort::Error('0061');
     }
 
     /**
@@ -120,18 +149,52 @@ class AuthController extends Controller
     protected function signup(AuthSignupRequest $request)
     {
         $signupData = User::bindSignupData($request);
-
         if( $this->user = User::create($signupData)){
-            $access_token = JWTAuth::fromUser($this->user);
-            $auth = JWTAuth::setToken($access_token)->authenticate();
-            $refresh_token = RefreshToken::createToken($access_token);
-//            $this->dispatch(new SignupMailSendJob($this->user));
-            return response()->success([
-                'access_token' => $access_token,
-                'refresh_token' => $refresh_token,
-            ]);
+            return response()->success($this->user->getTokens());
         }
         return Abort::Error('0040');
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/signup/google",
+     *   summary="signup",
+     *   operationId="signup_google",
+     *   tags={"/Users/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign up into web site bia google plus",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/signup/google")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function googleSignup(AuthGoogleSignupRequest $request)
+    {
+        $socialPayload = SocialGoogleAccount::GetPayload($request->id_token);
+        if (!$socialPayload){
+            return Abort::Error('0063');
+        }
+
+        $checkExistUser = SocialGoogleAccount::FindUserByPayload($socialPayload);
+        $uniqueId = SocialGoogleAccount::GetUniqueIdByPayload($socialPayload);
+
+        if($checkExistUser !== null){
+            // 이미 소셜 가입한경우.
+            return Abort::Error('0016');
+        }
+
+        $signupData = User::bindSignupData($request);
+        if( $this->user = User::create($signupData)){
+            SocialGoogleAccount::create([
+                "user_id" => $this->user->id,
+                "unique_id" => $uniqueId,
+            ]);
+        }
+
+        return response()->success($this->user->getTokens());
     }
 
     /**
@@ -152,6 +215,7 @@ class AuthController extends Controller
      */
     protected function signdrop(AuthSigndropRequest $request)
     {
+        // TODO Social token destroy
         if($this->user->delete()){
             JWTAuth::invalidate();
             return response()->success();

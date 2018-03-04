@@ -28,6 +28,10 @@ return [
     "httpCode" => 208,
     "msg" => "Already been enumerated in a previous reply to this request."
 ),
+"0016" => (object)array(
+    "httpCode" => 208,
+    "msg" => "Already been signup."
+),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      2xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -126,6 +130,10 @@ return [
 "0062" => (object)array(
     "httpCode" => 419,
     "msg" => "Token Expired"
+),
+"0063" => (object)array(
+    "httpCode" => 400,
+    "msg" => "Invalid Social credential"
 ),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response

@@ -41,6 +41,27 @@ class SocialGoogleAccount extends Model
         'user_id' => 'string',
     ];
 
+    public static function GetPayload($id_token){
+        try{
+            $client = new \Google_Client(['client_id' => env("GOOGLE_PLUS_CLIENT_ID")]);
+            return $client->verifyIdToken($id_token);
+        }catch (\Exception $e){
+            return false;
+        }
+    }
+
+    public static function FindUserByPayload($payload){
+        $uniqueId = static::GetUniqueIdByPayload($payload);
+        $account = static::where("unique_id", "=", $uniqueId)->first();
+        return is_null($account)
+            ? null
+            : $account->user;
+    }
+
+    public static function GetUniqueIdByPayload($payload){
+        return $payload['sub'];
+    }
+
     public function user() {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
     }

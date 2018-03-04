@@ -23,7 +23,8 @@
         "jenssegers/agent": "^2.5",
         "sentry/sentry-laravel": "^0.7.0",
         "tymon/jwt-auth": "0.5.*",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "google/apiclient": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

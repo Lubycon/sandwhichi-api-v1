@@ -25,7 +25,7 @@ class AddTableSocialAccountsTable extends Migration
         Schema::create('social_google_accounts', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->string('id_token',100)->unique();
+            $table->string('unique_id',100)->unique();
             $table->timestamps();
             $table->softDeletes();
         });
