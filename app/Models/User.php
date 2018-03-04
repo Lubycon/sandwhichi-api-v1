@@ -213,4 +213,8 @@ class User extends Model implements AuthenticatableContract,
             parent::setAttribute($key, $value);
         }
     }
+
+    public function socialGoogleAccount(){
+        return $this->hasOne('App\Models\SocialGoogleAccount', 'user_id', 'id');
+    }
 }

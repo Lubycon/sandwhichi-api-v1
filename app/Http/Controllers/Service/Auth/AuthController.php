@@ -217,6 +217,10 @@ class AuthController extends Controller
     {
         // TODO Social token destroy
         if($this->user->delete()){
+            if($googleAccount = $this->user->socialGoogleAccount){
+                $googleAccount->delete();
+            }
+
             JWTAuth::invalidate();
             return response()->success();
         }
