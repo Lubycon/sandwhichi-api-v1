@@ -58,14 +58,6 @@
 * php artisan l5-swagger:generate // json data update
 
 
-### 서버 재시작 ###
-> 세팅이 완료 된 후에는 서버를 재 시작해주는것이 좋습니다.
-> homestead에서는 머신을 재시작해야하고 supervisorctl 구문만 실행하면 됩니다.
-* sudo service nginx restart;
-* sudo service php7.0-fpm restart;
-* sudo service mysql restart;
-* sudo supervisorctl restart all;
-
 ### 패키지 버전관리 ###
 > composer install
 >> composer.lock의 해시값을 참조하여 모든 프로젝트의 패키지 버전을 통일 관리합니다.
