@@ -45,6 +45,7 @@ class SocialNaverAccount extends Model
         'id' => 'string',
         'user_id' => 'string',
     ];
+    public static $ProfileWhiteList = ['nickname','profileImage','age','gender','email','name','birthday'];
 
     public static function GetTokens($code, $state){
         $result = null;
@@ -100,7 +101,7 @@ class SocialNaverAccount extends Model
     }
 
     public static function GetProfile($access_token){
-        $result = null;
+        $result = [];
         try{
             $client = new Client();
             $url = "https://openapi.naver.com/v1/nid/me";
@@ -111,22 +112,18 @@ class SocialNaverAccount extends Model
             ]);
             $response_code = $response->getStatusCode();
             if($response_code === 200) {
-                //{
-                //    "id": "41864220",
-                //    "nickname": "ZEPOT",
-                //    "profile_image": "https://ssl.pstatic.net/static/pwe/address/img_profile.png",
-                //    "age": "20-29",
-                //    "gender": "M",
-                //    "email": "s_u_n_e@naver.com",
-                //    "name": "김동규",
-                //    "birthday": "10-27"
-                //}
                 $json_response = json_decode($response->getBody(),true);
-                if($json_response['resultcode'] === "00"){
-                    $result = $json_response['response'];
+                if($json_response['resultcode'] === "00" && $json_response['message'] === "success"){
+                    foreach($json_response['response'] as $key => $value){
+                        $casedKey = camel_case($key);
+                        if(in_array($casedKey, static::$ProfileWhiteList)){
+                            $result[$casedKey] = $value;
+                        }
+                    }
                 }
             }
         }catch (\Exception $exception){
+            return null;
         }
         return $result;
     }

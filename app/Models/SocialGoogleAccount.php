@@ -40,11 +40,21 @@ class SocialGoogleAccount extends Model
         'id' => 'string',
         'user_id' => 'string',
     ];
+    public static $ProfileWhiteList = ['email','name','picture','givenName','familyName','locale'];
+
 
     public static function GetPayload($id_token){
+        $result = [];
         try{
             $client = new \Google_Client(['client_id' => env("GOOGLE_PLUS_CLIENT_ID")]);
-            return $client->verifyIdToken($id_token);
+            $rawPayload = $client->verifyIdToken($id_token);
+            foreach($rawPayload as $key => $value){
+                $casedKey = camel_case($key);
+                if(in_array($casedKey, static::$ProfileWhiteList)){
+                    $result[$casedKey] = $value;
+                }
+            }
+            return $result;
         }catch (\Exception $e){
             return false;
         }
