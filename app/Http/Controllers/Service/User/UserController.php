@@ -90,7 +90,7 @@ class UserController extends Controller
             return Abort::Error('0063');
         }
         return response()->success([
-            "tokens" => $tokens,
+            "accessToken" => $accessToken,
             "profile" => $profile,
         ]);
     }
