@@ -9,11 +9,13 @@ class AuthTest extends TestCase
 {
     private $prefix = "/v1/users/";
     public $user;
+    public $faker;
     public $token;
     public $headers;
     public $invalidHeaders;
 
     public function __setup(){
+        $this->faker = Faker\Factory::create();
         $this->user = factory(App\Models\User::class)->create();
         $this->token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($this->user);
         $this->headers = [
@@ -122,8 +124,9 @@ class AuthTest extends TestCase
         $randStr = Str::random(20);
         $password = "password123!";
         $this->json('POST', $this->prefix."signup" , [
-              "email" => $randStr."@sandwhichi.com",
+              "email" => $this->faker->unique()->email,
               "password" => $password,
+              "name" => $this->faker->name,
               "emailAccepted" => true,
               "termsOfServiceAccepted" => true,
               "privacyPolicyAccepted" => true,
@@ -134,11 +137,10 @@ class AuthTest extends TestCase
 
 
     public function signupWhenUser(){
-        $user = factory(App\Models\User::class)->create();
         $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($this->user);
 
         $this->json('POST', $this->prefix."signup" , [
-            "email" => "nononoenofnd@sandwhichi.com",
+            "email" => $this->faker->unique()->email,
             "password" => "password1234!",
             "emailAccepted" => true,
             "termsOfServiceAccepted" => true,
@@ -152,7 +154,7 @@ class AuthTest extends TestCase
 
     public function signupInvalid(){
         $this->json('POST', $this->prefix."signup" , [
-            "email" => "nonosandwhichi.com",
+            "email" => $this->faker->unique()->email,
             "password" => "pass!",
             "emailAccepted" => true,
             "termsOfServiceAccepted" => true,
@@ -163,9 +165,8 @@ class AuthTest extends TestCase
     }
 
     public function signupInvalidPassword(){
-        $randStr = Str::random(20);
         $this->json('POST', $this->prefix."signup" , [
-            "email" => $randStr."@sandwhichi.com",
+            "email" => $this->faker->unique()->email,
             "password" => "password",
             "emailAccepted" => true,
             "termsOfServiceAccepted" => true,
@@ -176,9 +177,8 @@ class AuthTest extends TestCase
     }
 
     public function signupInvalidNotAcceptTermsOfService(){
-        $randStr = Str::random(20);
         $this->json('POST', $this->prefix."signup" , [
-            "email" => $randStr."@sandwhichi.com",
+            "email" => $this->faker->unique()->email,
             "password" => "pass!",
             "emailAccepted" => true,
             "termsOfServiceAccepted" => false,
@@ -189,9 +189,8 @@ class AuthTest extends TestCase
     }
 
     public function signupInvalidNotAcceptPrivacyPolicy(){
-        $randStr = Str::random(20);
         $this->json('POST', $this->prefix."signup" , [
-            "email" => $randStr."@sandwhichi.com",
+            "email" => $this->faker->unique()->email,
             "password" => "pass!",
             "emailAccepted" => true,
             "termsOfServiceAccepted" => true,
@@ -237,7 +236,7 @@ class AuthTest extends TestCase
             ]);
 
         $this->json('POST', $this->prefix."exists/email" , [
-            "email" => "flkdsjflkas@sandwhichi.com"
+            "email" => $this->faker->unique()->email,
         ])
             ->assertResponseStatus(200)
             ->seeJson([

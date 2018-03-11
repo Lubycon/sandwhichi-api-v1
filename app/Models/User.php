@@ -101,6 +101,7 @@ class User extends Model implements AuthenticatableContract,
 	    return [
 	        "email" => $request->email,
             "password" => bcrypt($request->password),
+            "name" => $request->name,
             "email_accepted" => $request->emailAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
             "privacy_policy_accepted" => $request->privacyPolicyAccepted,

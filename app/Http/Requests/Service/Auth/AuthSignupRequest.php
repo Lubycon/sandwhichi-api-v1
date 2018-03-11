@@ -26,6 +26,7 @@ class AuthSignupRequest extends Request
      *           required={"email","password","nickname","newsletterAccepted","termsOfServiceAccepted"},
      *           @SWG\Property(property="email", type="string", default="test@sandwhichi.com"),
      *           @SWG\Property(property="password", type="string", default="password123!"),
+     *           @SWG\Property(property="name", type="string", default="홍길동"),
      *           @SWG\Property(property="emailAccepted", type="boolean", default=true),
      *           @SWG\Property(property="termsOfServiceAccepted", type="boolean", default=true),
      *           @SWG\Property(property="privacyPolicyAccepted", type="boolean", default=true),
@@ -38,6 +39,7 @@ class AuthSignupRequest extends Request
         $requiredRule = [
             "email" => "required|availableEmail|email|max:255",
             "password" => "required|string|availablePassword|max:1000",
+            "name" => "required|max:20",
             "emailAccepted" => "required|boolean",
             "termsOfServiceAccepted" => "required|accepted",
             "privacyPolicyAccepted" => "required|accepted",
