@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Service\Auth;
 
 // Global
+use App\Http\Requests\Service\Auth\AuthNaverSigninRequest;
+use App\Http\Requests\Service\Auth\AuthNaverSignupRequest;
 use App\Models\SocialGoogleAccount;
+use App\Models\SocialNaverAccount;
 use Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Auth;
@@ -79,7 +82,7 @@ class AuthController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/users/signin/google",
+     *   path="/users/google/signin",
      *   summary="signin",
      *   operationId="signin_google",
      *   tags={"/Users/Auth"},
@@ -88,7 +91,7 @@ class AuthController extends Controller
      *     name="body",
      *     description="Sign in into web site bia google plus",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/auth/signin/google")
+     *     @SWG\Schema(ref="#/definitions/auth/google/signin")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
@@ -100,6 +103,45 @@ class AuthController extends Controller
             return Abort::Error('0063');
 
         $this->user = SocialGoogleAccount::FindUserByPayload($socialPayload);
+
+        if($this->user !== null){
+            return response()->success($this->user->getTokens());
+        }
+
+        return Abort::Error('0061');
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/naver/signin",
+     *   summary="signin",
+     *   operationId="signin_naver",
+     *   tags={"/Users/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign in into web site bia naver plus",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/naver/signin")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function naverSignin(AuthNaverSigninRequest $request)
+    {
+        $tokens = SocialNaverAccount::GetTokens($request->code, $request->state);
+        if (is_null($tokens)){
+            return Abort::Error('0063');
+        }
+        $accessToken = $tokens['access_token'];
+
+        $profile = SocialNaverAccount::GetProfile($accessToken);
+        if(is_null($profile)){
+            return Abort::Error('0063');
+        }
+
+        $uniqueId = $profile['id'];
+        $this->user = SocialNaverAccount::FindUserByUniqueId($uniqueId);
 
         if($this->user !== null){
             return response()->success($this->user->getTokens());
@@ -157,7 +199,7 @@ class AuthController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/users/signup/google",
+     *   path="/users/google/signup",
      *   summary="signup",
      *   operationId="signup_google",
      *   tags={"/Users/Auth"},
@@ -166,7 +208,7 @@ class AuthController extends Controller
      *     name="body",
      *     description="Sign up into web site bia google plus",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/auth/signup/google")
+     *     @SWG\Schema(ref="#/definitions/auth/google/signup")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
@@ -194,6 +236,46 @@ class AuthController extends Controller
             ]);
         }
 
+        return response()->success($this->user->getTokens());
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/naver/signup",
+     *   summary="signup",
+     *   operationId="signup_naver",
+     *   tags={"/Users/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign up into web site bia naver",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/naver/signup")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function naverSignup(AuthNaverSignupRequest $request)
+    {
+        $profile = SocialNaverAccount::GetProfile($request->accessToken);
+        if(is_null($profile)){
+            return Abort::Error('0063');
+        }
+
+        $uniqueId = $profile['id'];
+        $checkExistUser = SocialNaverAccount::FindUserByUniqueId($uniqueId);
+        if($checkExistUser !== null){
+            // 이미 소셜 가입한경우.
+            return Abort::Error('0016');
+        }
+
+        $signupData = User::bindSignupData($request);
+        if( $this->user = User::create($signupData)){
+            SocialNaverAccount::create([
+                "user_id" => $this->user->id,
+                "unique_id" => $uniqueId,
+            ]);
+        }
         return response()->success($this->user->getTokens());
     }
 

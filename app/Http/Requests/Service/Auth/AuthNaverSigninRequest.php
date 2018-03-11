@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
 use Log;
 
-class AuthGoogleSigninRequest extends Request
+class AuthNaverSigninRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -19,12 +19,13 @@ class AuthGoogleSigninRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="auth/google/signin",
+     *   definition="auth/naver/signin",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"id_token"},
-     *           @SWG\Property(property="id_token", type="string", default=""),
+     *           required={"state","code"},
+     *           @SWG\Property(property="code", type="string", default=""),
+     *           @SWG\Property(property="state", type="string", default=""),
      *       )
      *   }
      * )
@@ -32,7 +33,8 @@ class AuthGoogleSigninRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "id_token" => "required|min:10",
+            "state" => "required",
+            "code" => "required",
         ];
         return $requiredRule;
     }

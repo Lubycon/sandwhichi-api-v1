@@ -19,11 +19,11 @@ class AuthGoogleSignupRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="auth/signup/google",
+     *   definition="auth/google/signup",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"id_token", "email","password","nickname","newsletterAccepted","termsOfServiceAccepted"},
+     *           required={"id_token", "email","password","name","newsletterAccepted","termsOfServiceAccepted"},
      *           @SWG\Property(property="id_token", type="string", default=""),
      *           @SWG\Property(property="email", type="string", default="test@sandwhichi.com"),
      *           @SWG\Property(property="password", type="string", default="password123!"),

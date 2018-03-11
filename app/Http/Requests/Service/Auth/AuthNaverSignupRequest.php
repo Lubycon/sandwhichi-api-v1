@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
 use Log;
 
-class AuthSignupRequest extends Request
+class AuthNaverSignupRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -19,11 +19,12 @@ class AuthSignupRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="auth/signup",
+     *   definition="auth/naver/signup",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"email","password","name","newsletterAccepted","termsOfServiceAccepted"},
+     *           required={"accessToken", "email","password","name","newsletterAccepted","termsOfServiceAccepted"},
+     *           @SWG\Property(property="accessToken", type="string", default=""),
      *           @SWG\Property(property="email", type="string", default="test@sandwhichi.com"),
      *           @SWG\Property(property="password", type="string", default="password123!"),
      *           @SWG\Property(property="name", type="string", default="홍길동"),
@@ -37,6 +38,7 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
+            "accessToken" => "required",
             "email" => "required|availableEmail|email|max:255",
             "password" => "required|string|availablePassword|max:1000",
             "name" => "required|max:20",
