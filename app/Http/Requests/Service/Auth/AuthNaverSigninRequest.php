@@ -23,9 +23,8 @@ class AuthNaverSigninRequest extends Request
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"state","code"},
-     *           @SWG\Property(property="code", type="string", default=""),
-     *           @SWG\Property(property="state", type="string", default=""),
+     *           required={"access_token"},
+     *           @SWG\Property(property="access_token", type="string", default="naver access token"),
      *       )
      *   }
      * )
@@ -33,8 +32,7 @@ class AuthNaverSigninRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "state" => "required",
-            "code" => "required",
+            "access_token" => "required",
         ];
         return $requiredRule;
     }

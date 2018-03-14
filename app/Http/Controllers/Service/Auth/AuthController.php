@@ -129,13 +129,7 @@ class AuthController extends Controller
      */
     protected function naverSignin(AuthNaverSigninRequest $request)
     {
-        $tokens = SocialNaverAccount::GetTokens($request->code, $request->state);
-        if (is_null($tokens)){
-            return Abort::Error('0063');
-        }
-        $accessToken = $tokens['access_token'];
-
-        $profile = SocialNaverAccount::GetProfile($accessToken);
+        $profile = SocialNaverAccount::GetProfile($request->access_token);
         if(is_null($profile)){
             return Abort::Error('0063');
         }
