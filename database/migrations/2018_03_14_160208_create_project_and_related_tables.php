@@ -76,11 +76,9 @@ class CreateProjectAndRelatedTables extends Migration
         // location
         Schema::create('locations', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('address_0', 10);
-            $table->string('address_1', 10);
-            $table->string('address_2', 10);
-            $table->float('latitude', 11,7);
-            $table->float('longitude', 11,7);
+            $table->string('address_0', 20);
+            $table->string('address_1', 20)->nullable();
+            $table->string('address_2', 20)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -112,6 +110,8 @@ class CreateProjectAndRelatedTables extends Migration
             $table->boolean('sunday')->default(false);
             $table->integer('schedule_recurring_id')->unsigned()->nullable();
             $table->boolean('is_negotiable')->unsigned()->default(false);
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->timestamps();
         });
 
@@ -123,6 +123,10 @@ class CreateProjectAndRelatedTables extends Migration
 
         Artisan::call('db:seed', [
             '--class' => ReferenceDataSeeder::class,
+        ]);
+
+        Artisan::call('db:seed', [
+            '--class' => LocationDataSeeder::class,
         ]);
     }
 

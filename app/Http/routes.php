@@ -30,6 +30,10 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('email', 'Service\Auth\AuthController@emailExist');
         });
     });
+
+    Route::group(['prefix' => 'projects/'], function () {
+        Route::post('', 'Service\Project\ProjectController@create');
+    });
 });
 
 Route::get('/ping', function () {
