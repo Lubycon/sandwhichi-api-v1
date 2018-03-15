@@ -40,7 +40,7 @@ class SocialGoogleAccount extends Model
         'id' => 'string',
         'user_id' => 'string',
     ];
-    public static $ProfileWhiteList = ['email','name','picture','givenName','familyName','locale'];
+    public static $ProfileWhiteList = ['sub', 'email','name','picture','givenName','familyName','locale'];
 
 
     public static function GetPayload($id_token){
