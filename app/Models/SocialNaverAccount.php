@@ -45,7 +45,7 @@ class SocialNaverAccount extends Model
         'id' => 'string',
         'user_id' => 'string',
     ];
-    public static $ProfileWhiteList = ['nickname','profileImage','age','gender','email','name','birthday'];
+    public static $ProfileWhiteList = ['id', 'nickname','profileImage','age','gender','email','name','birthday'];
 
     public static function GetTokens($code, $state){
         $result = null;
