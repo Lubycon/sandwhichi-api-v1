@@ -184,8 +184,7 @@ class AuthController extends Controller
      */
     protected function signup(AuthSignupRequest $request)
     {
-        $signupData = User::bindSignupData($request);
-        if( $this->user = User::create($signupData)){
+        if( $this->user = User::CreateUser($request) ){
             return response()->success($this->user->getTokens());
         }
         return Abort::Error('0040');
@@ -222,8 +221,7 @@ class AuthController extends Controller
             return Abort::Error('0016');
         }
 
-        $signupData = User::bindSignupData($request);
-        if( $this->user = User::create($signupData)){
+        if( $this->user = User::CreateUser($request) ){
             SocialGoogleAccount::create([
                 "user_id" => $this->user->id,
                 "unique_id" => $uniqueId,
@@ -263,8 +261,7 @@ class AuthController extends Controller
             return Abort::Error('0016');
         }
 
-        $signupData = User::bindSignupData($request);
-        if( $this->user = User::create($signupData)){
+        if( $this->user = User::CreateUser($request) ){
             SocialNaverAccount::create([
                 "user_id" => $this->user->id,
                 "unique_id" => $uniqueId,

@@ -24,57 +24,36 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 /**
  * App\Models\User
  *
- * @property int $id
+ * @property string $id
  * @property string $email
  * @property string $password
- * @property string $nickname
- * @property bool $newsletters_accepted
- * @property bool $terms_of_service_accepted
- * @property string $gender
- * @property string $grade
+ * @property string $name
  * @property string $status
- * @property int $image_id
- * @property string $last_login_time
+ * @property string $introduce
+ * @property bool $email_accepted
+ * @property bool $terms_of_service_accepted
+ * @property bool $privacy_policy_accepted
+ * @property \Carbon\Carbon $last_signin_time
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Content[] $content
- * @property-read \App\Models\Image $image
- * @property-read \App\Models\SignupAllow $signupAllow
+ * @property-read \App\Models\SocialGoogleAccount $socialGoogleAccount
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AccessToken[] $token
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User inDropTerm()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereGender($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereGrade($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereEmailAccepted($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereImageId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastLoginTime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereNewslettersAccepted($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereNickname($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereIntroduce($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastSigninTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePassword($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePrivacyPolicyAccepted($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereTermsOfServiceAccepted($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string $birthday
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereBirthday($value)
- * @property-read \App\Models\BlackUser $blackUser
- * @property-read \App\Models\Signdrop $signdrop
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\AccessToken[] $token
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User inDropTerm()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereToken($value)
- * @property string $first_name
- * @property string $last_name
- * @property string $introduce
- * @property bool $email_accepted
- * @property \Carbon\Carbon $last_signin_time
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereEmailAccepted($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereFirstName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereIntroduce($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastSigninTime($value)
- * @property bool $privacy_policy_accepted
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePrivacyPolicyAccepted($value)
  */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
@@ -85,6 +64,9 @@ class User extends Model implements AuthenticatableContract,
     protected $guarded = array();
     protected $casts = [
         'id' => 'string',
+        'email_accepted' => 'boolean',
+        'terms_of_service_accepted' => 'boolean',
+        'privacy_policy_accepted' => 'boolean',
     ];
 	protected $dates = ['created_at','updated_at','deleted_at','last_signin_time',];
     protected $hidden = ['password'];
@@ -111,6 +93,20 @@ class User extends Model implements AuthenticatableContract,
     public static function CreateUser($request){
         $signupData = User::bindSignupData($request);
         return User::create($signupData);
+    }
+
+    public function getProfile(){
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'name' => $this->name,
+            'status' => $this->status,
+            'introduce' => $this->introduce,
+            'emailAccepted' => $this->email_accepted,
+            'termsOfServiceAccepted' => $this->terms_of_service_accepted,
+            'privacyPolicyAccepted' => $this->privacy_policy_accepted,
+            'lastSigninTime' => $this->last_signin_time,
+        ];
     }
 
     public function getTokens(){

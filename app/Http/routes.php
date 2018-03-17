@@ -23,9 +23,10 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('signup', 'Service\Auth\AuthController@signup');
         Route::post('signin', 'Service\Auth\AuthController@signin');
         Route::put('signout', 'Service\Auth\AuthController@signout');
-
         Route::delete('signdrop', 'Service\Auth\AuthController@signdrop');
         Route::get('token/refresh', 'Service\Auth\AuthController@refreshAccessToken');
+
+        Route::get('me', 'Service\User\UserController@profile');
 
         Route::group(['prefix' => 'exists/'], function () {
             Route::post('email', 'Service\Auth\AuthController@emailExist');

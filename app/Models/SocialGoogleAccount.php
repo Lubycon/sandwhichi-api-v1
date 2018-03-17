@@ -29,6 +29,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SocialGoogleAccount whereIdToken($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SocialGoogleAccount whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SocialGoogleAccount whereUserId($value)
+ * @property string $unique_id
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SocialGoogleAccount whereUniqueId($value)
  */
 class SocialGoogleAccount extends Model
 {
