@@ -14,7 +14,8 @@ class ProjectCreateRequest extends Request
 
     public function authorize()
     {
-        return true;
+        // TODO 회원 인증 구현시 요소 추가
+        return User::isUser();
     }
 
     /**
