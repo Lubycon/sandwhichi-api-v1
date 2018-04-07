@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Service\Project;
 
 // Global
+use App\Models\Ability;
 use App\Models\Contact;
+use App\Models\Keyword;
 use App\Models\Media;
 use App\Models\ProjectContact;
 use App\Models\ProjectMedia;
@@ -79,6 +81,24 @@ class ProjectController extends Controller
             $this->project->contactList()->create(["contact_id" => $contact->id]);
         }
 
+        // TODO keywords, ability sync method
+        foreach($request->keywords as $keyword_name){
+            $keyword = Keyword::firstOrCreate([
+                'name' => $keyword_name,
+            ]);
+            $this->project->keywordList()->create([
+                "keyword_id" => $keyword->id
+            ]);
+        }
+
+        foreach($request->abilities as $ability_name){
+            $ability = Ability::firstOrCreate([
+                'name' => $ability_name,
+            ]);
+            $this->project->abilityList()->create([
+                "ability_id" => $ability->id
+            ]);
+        }
 
         if($request->media){
             foreach($request->media as $raw_media){

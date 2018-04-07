@@ -51,6 +51,16 @@ class ProjectCreateRequest extends Request
      *                    @SWG\Property(property="information", type="string", default="daniel@good.com"),
      *                ),
      *           ),
+     *           @SWG\Property(property="keywords", type="array", default = {"IT", "Food"},
+     *                @SWG\Items(
+     *                    type = "string"
+     *                ),
+     *           ),
+     *           @SWG\Property(property="keywords", type="array", default = {"PHP", "Javascript"},
+     *                @SWG\Items(
+     *                    type = "string"
+     *                ),
+     *           ),
      *           @SWG\Property(property="media", type="array",
      *                @SWG\Items(
      *                    type="object",
@@ -91,6 +101,12 @@ class ProjectCreateRequest extends Request
             "contacts" => "required|array",
             "contacts.*.typeId" => "required|exists:contact_types,id",
             "contacts.*.information" => "required|max:100",
+
+            // 키워드 관련
+            "keywords" => "required|array",
+
+            // 어빌리티 관련
+            "abilities" => "required|array",
 
             // 미디어 관련
             "media" => "array",

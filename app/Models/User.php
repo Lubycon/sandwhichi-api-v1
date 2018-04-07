@@ -74,6 +74,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastSigninTime($value)
  * @property bool $privacy_policy_accepted
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePrivacyPolicyAccepted($value)
+ * @property string $name
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereName($value)
  */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,

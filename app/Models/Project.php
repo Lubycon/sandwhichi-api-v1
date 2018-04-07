@@ -35,8 +35,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\Location $location
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProjectMedia[] $mediaList
  * @property-read \App\Models\Schedule $schedule
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProjectAbility[] $abilityList
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProjectKeyword[] $keywordList
  */
-class Project extends Model 
+class Project extends Model
 {
     protected $guarded = array();
     protected $table = 'projects';
@@ -60,5 +62,13 @@ class Project extends Model
 
     public function mediaList(){
         return $this->hasMany(ProjectMedia::class);
+    }
+
+    public function keywordList(){
+        return $this->hasMany(ProjectKeyword::class);
+    }
+
+    public function abilityList(){
+        return $this->hasMany(ProjectAbility::class);
     }
 }

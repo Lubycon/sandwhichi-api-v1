@@ -36,6 +36,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $ends_at
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Schedule whereEndsAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Schedule whereStartedAt($value)
+ * @property string $start_time
+ * @property string $end_time
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Schedule whereEndTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Schedule whereStartTime($value)
  */
 class Schedule extends Model 
 {
