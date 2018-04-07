@@ -29,6 +29,19 @@ class ProjectKeyword extends Model
     protected $table = 'project_keywords';
     public $timestamps = true;
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->keyword->countUp();
+        });
+
+        static::deleted(function ($model) {
+            $model->keyword->countDown();
+        });
+    }
+
     public function keyword(){
         return $this->belongsTo(Keyword::class);
     }

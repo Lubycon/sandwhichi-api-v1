@@ -28,4 +28,20 @@ class ProjectAbility extends Model
     protected $table = 'project_abilities';
     public $timestamps = true;
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->ability->countUp();
+        });
+
+        static::deleted(function ($model) {
+            $model->ability->countDown();
+        });
+    }
+
+    public function ability(){
+        return $this->belongsTo(Ability::class);
+    }
 }

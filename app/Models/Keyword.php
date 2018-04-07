@@ -31,4 +31,18 @@ class Keyword extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    public function countUp(){
+        $this->fresh();
+        $this->update([
+            'count' => $this['count']+1
+        ]);
+    }
+
+    public function countDown(){
+        $this->fresh();
+        $this->update([
+            'count' => abs($this['count']-1)
+        ]);
+    }
 }
