@@ -34,6 +34,15 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => 'projects/'], function () {
         Route::post('', 'Service\Project\ProjectController@create');
     });
+
+
+    Route::group(['prefix' => '/keywords/'], function () {
+        Route::post('{name}', 'Service\Keyword\KeywordController@search');
+    });
+
+    Route::group(['prefix' => '/abilities/'], function () {
+        Route::post('{name}', 'Service\Ability\AbilityController@search');
+    });
 });
 
 Route::get('/ping', function () {

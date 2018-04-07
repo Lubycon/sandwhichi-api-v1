@@ -56,7 +56,7 @@ class ProjectCreateRequest extends Request
      *                    type = "string"
      *                ),
      *           ),
-     *           @SWG\Property(property="keywords", type="array", default = {"PHP", "Javascript"},
+     *           @SWG\Property(property="abilities", type="array", default = {"PHP", "Javascript"},
      *                @SWG\Items(
      *                    type = "string"
      *                ),
