@@ -136,15 +136,17 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        // pxd added Providers
+        // added Providers
         Barryvdh\Cors\ServiceProvider::class,
-        App\Providers\ResponseMacroServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Stevebauman\Location\LocationServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+
+        App\Providers\ResponseMacroServiceProvider::class,
+        App\Providers\ValidatorServiceProvider::class,
 
         /*
          * Application Service Providers...

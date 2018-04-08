@@ -27,7 +27,7 @@ class ProjectCreateRequest extends Request
      *           required={"title", "description", "startedAt", "endsAt", "locationId", "schedule", "contacts"},
      *           @SWG\Property(property="title", type="string", default="Project title"),
      *           @SWG\Property(property="description", type="string", default="description"),
-     *           @SWG\Property(property="profileImageUrl", type="string", default="https://s3.sandwhichi.con/sssdff/11"),
+     *           @SWG\Property(property="profileImageUrl", type="string", default="https://sandwhichi-dev-raw-image.s3.ap-northeast-2.amazonaws.com/11"),
      *           @SWG\Property(property="startedAt", type="timestamp", default="2017-10-10 12:00:00"),
      *           @SWG\Property(property="endsAt", type="timestamp", default="2018-11-11 12:00:00"),
      *           @SWG\Property(property="locationId", type="string", default="1"),
@@ -78,7 +78,7 @@ class ProjectCreateRequest extends Request
             // 프로젝트 관련
             "title" => "required|min:2|max:100",
             "description" => "required|min:2",
-            "profileImageUrl" => "required", // TODO check is our host
+            "profileImageUrl" => "required|url|rawImageS3bucketUrl", // TODO 이미지 존재 여부 확인
             "startedAt" => "required|date",
             "endsAt" => "required|date|after:start_date",
             "locationId" => "required|exists:locations,id",
@@ -104,14 +104,16 @@ class ProjectCreateRequest extends Request
 
             // 키워드 관련
             "keywords" => "required|array",
+            "keywords.*" => "required|string",
 
             // 어빌리티 관련
             "abilities" => "required|array",
+            "abilities.*" => "required|string",
 
             // 미디어 관련
             "media" => "array",
             "media.*.typeId" => "exists:media_types,id",
-            "media.*.url" => "url", // TODO check if image, that our hosts
+            "media.*.url" => "url|youtubeOrRawImageS3BucketUrl", // TODO typeId에 맞게 밸리데이션
         ];
         return $requiredRule;
     }

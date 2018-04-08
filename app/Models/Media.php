@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Log;
 
 /**
  * App\Models\Media
@@ -35,5 +36,17 @@ class Media extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    public static function IsRawImageBucketUrl($url){
+        $parseUrl = parse_url($url);
+        $baseUrl = array_key_exists('host', $parseUrl) ? "https://".$parseUrl['host'] : null;
+        return $baseUrl === env('SANDWHICHI_RAW_IMAGE_BUCKET_BASE_URL');
+    }
+
+    public static function IsYoutubeUrl($url){
+        $parseUrl = parse_url($url);
+        $baseUrl = array_key_exists('host', $parseUrl) ? $parseUrl['host'] : null;
+        return $baseUrl === 'youtube.com';
+    }
 
 }
