@@ -46,5 +46,10 @@ class Schedule extends Model
     protected $guarded = array();
     protected $table = 'schedules';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'schedule_recurring_id' => 'string',
+        'is_negotiable' => 'boolean',
+    ];
 
 }

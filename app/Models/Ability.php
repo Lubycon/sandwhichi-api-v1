@@ -27,6 +27,9 @@ class Ability extends Model
     protected $guarded = array();
     protected $table = 'abilities';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     use SoftDeletes;
 

@@ -33,6 +33,9 @@ class Location extends Model
     protected $guarded = array();
     protected $table = 'locations';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     use SoftDeletes;
 

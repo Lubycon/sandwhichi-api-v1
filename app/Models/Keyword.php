@@ -27,6 +27,9 @@ class Keyword extends Model
     protected $guarded = array();
     protected $table = 'keywords';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     use SoftDeletes;
 

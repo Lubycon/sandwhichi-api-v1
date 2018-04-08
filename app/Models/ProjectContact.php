@@ -27,6 +27,11 @@ class ProjectContact extends Model
     protected $guarded = array();
     protected $table = 'project_contacts';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'project_id' => 'string',
+        'contact_id' => 'string',
+    ];
 
     use SoftDeletes;
 

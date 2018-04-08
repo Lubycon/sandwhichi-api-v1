@@ -27,6 +27,10 @@ class Media extends Model
     protected $guarded = array();
     protected $table = 'media';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'type_id' => 'string',
+    ];
 
     use SoftDeletes;
 

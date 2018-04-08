@@ -27,6 +27,10 @@ class Contact extends Model
     protected $guarded = array();
     protected $table = 'contacts';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'type_id' => 'string',
+    ];
 
     use SoftDeletes;
 

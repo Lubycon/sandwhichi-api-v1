@@ -27,6 +27,11 @@ class ProjectAbility extends Model
     protected $guarded = array();
     protected $table = 'project_abilities';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'project_id' => 'string',
+        'ability_id' => 'string',
+    ];
 
     public static function boot()
     {

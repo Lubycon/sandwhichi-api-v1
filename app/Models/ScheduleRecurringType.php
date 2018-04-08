@@ -22,5 +22,8 @@ class ScheduleRecurringType extends Model
     protected $guarded = array();
     protected $table = 'schedule_recurring_types';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
 
 }

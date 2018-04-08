@@ -43,6 +43,11 @@ class Project extends Model
     protected $guarded = array();
     protected $table = 'projects';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'location_id' => 'string',
+        'schedule_id' => 'string',
+    ];
 
     use SoftDeletes;
 

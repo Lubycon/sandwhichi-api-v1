@@ -22,5 +22,9 @@ class ProjectDescriptionQuestions extends Model
     protected $guarded = array();
     protected $table = 'project_description_questions';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
+
 
 }

@@ -28,6 +28,11 @@ class ProjectKeyword extends Model
     protected $guarded = array();
     protected $table = 'project_keywords';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'project_id' => 'string',
+        'keyword_id' => 'string',
+    ];
 
     public static function boot()
     {

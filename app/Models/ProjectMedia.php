@@ -27,6 +27,11 @@ class ProjectMedia extends Model
     protected $guarded = array();
     protected $table = 'project_media';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+        'project_id' => 'string',
+        'media_id' => 'string',
+    ];
 
     use SoftDeletes;
 

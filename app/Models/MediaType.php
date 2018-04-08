@@ -22,5 +22,8 @@ class MediaType extends Model
     protected $guarded = array();
     protected $table = 'media_types';
     public $timestamps = true;
+    protected $casts = [
+        'id' => 'string',
+    ];
 
 }
