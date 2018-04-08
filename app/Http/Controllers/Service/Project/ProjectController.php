@@ -61,7 +61,7 @@ class ProjectController extends Controller
         $this->project = Project::create([
             "title" => $request->title,
             "description" => json_encode($request->description),
-            "profile_image_url" => $request->profileImageUrl,
+            "profile_image_url" => Media::S3RawImageParse($request->profileImageUrl),
             "started_at" => $request->startedAt,
             "ends_at" => $request->endsAt,
             "location_id" => $request->locationId,
@@ -111,7 +111,7 @@ class ProjectController extends Controller
             foreach($request->media as $raw_media){
                 $media = Media::create([
                     'type_id' => $raw_media['typeId'],
-                    'url' => $raw_media['url'],
+                    'url' => Media::S3RawImageParse($raw_media['url']),
                 ]);
                 $this->project->mediaList()->create(["media_id" => $media->id]);
             }

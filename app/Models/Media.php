@@ -49,4 +49,13 @@ class Media extends Model
         return $baseUrl === 'youtube.com';
     }
 
+    public static function S3RawImageParse($url){
+        // 이미지 host가 raw image bucket일 경우 resize된 이미지가 있는 버킷의 cloudfront를 사용할 수 있도록 url을 변경시킨다.
+        if( static::IsRawImageBucketUrl($url) ){
+            $parseUrl = parse_url($url);
+            $url = $parseUrl['path'];
+        }
+        return $url;
+    }
+
 }
