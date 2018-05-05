@@ -13,7 +13,8 @@ class ProjectTest extends TestCase
     public $headers;
     public $invalidHeaders;
 
-    public function __setup(){
+    public function __setup()
+    {
         $this->user = factory(App\Models\User::class)->create();
         $this->token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($this->user);
         $this->headers = [
@@ -23,6 +24,7 @@ class ProjectTest extends TestCase
             'Authorization' => 'Bearer InvalidToken'
         ];
     }
+
     /**
      * A basic test example.
      *
@@ -36,159 +38,179 @@ class ProjectTest extends TestCase
         $this->createSuccess();
     }
 
-    public function createSuccess(){
+    public function createSuccess()
+    {
         // Full payload
-        $this->json('POST', $this->prefix."" , [
-            "title"=>"Project title",
-            "description"=>"description",
-            "profileImageUrl" => "https://youtube.com/123",
-            "startedAt"=>"2017-10-10 12:00:00",
-            "endsAt"=>"2018-11-11 12:00:00",
-            "locationId"=>"1",
-            "schedule"=> [
-                "monday"=>true,
-                "tuesday"=>true,
-                "wednesday"=>true,
-                "thursday"=>true,
-                "saturday"=>true,
-                "friday"=>true,
-                "sunday"=>true,
-                "isNegotiable"=>true,
-                "scheduleRecurringId"=>"1",
-                "startTime"=>"01:00:00",
-                "endTime"=>"03:00:00"
+        $this->json('POST', $this->prefix . "", [
+            "title"           => "Project title",
+            "description"     => "description",
+            "profileImageUrl" => "https://sandwhichi-dev-raw-image.s3.ap-northeast-2.amazonaws.com/11",
+            "startedAt"       => "2017-10-10 12:00:00",
+            "endsAt"          => "2018-11-11 12:00:00",
+            "locationId"      => "1",
+            "schedule"        => [
+                "monday"              => true,
+                "tuesday"             => true,
+                "wednesday"           => true,
+                "thursday"            => true,
+                "saturday"            => true,
+                "friday"              => true,
+                "sunday"              => true,
+                "isNegotiable"        => true,
+                "scheduleRecurringId" => "1",
+                "startTime"           => "01:00:00",
+                "endTime"             => "03:00:00"
             ],
-            "contacts"=>[
+            "contacts"        => [
                 [
-                "typeId"=>"1",
-                "information"=>"daniel@good.com"
+                    "typeId"      => "1",
+                    "information" => "daniel@good.com"
                 ]
             ],
-            "media"=>[
+            "media"           => [
                 [
-                "typeId"=>"1",
-                "url"=>"https://youtube.com/123"
+                    "typeId" => "1",
+                    "url"    => "https://youtube.com/123"
                 ]
-            ]
-        ],$this->headers)
-        ->assertResponseStatus(200);
+            ],
+            "keywords"        => [
+                "IT",
+                "Food"
+            ],
+            "abilities"       => [
+                "PHP",
+                "Javascript"
+            ],
+        ], $this->headers)
+            ->assertResponseStatus(200);
 
         // 미디어 없어도 성공
-        $this->json('POST', $this->prefix."" , [
-            "title"=>"Project title",
-            "description"=>"description",
-            "profileImageUrl" => "https://youtube.com/123",
-            "startedAt"=>"2017-10-10 12:00:00",
-            "endsAt"=>"2018-11-11 12:00:00",
-            "locationId"=>"1",
-            "schedule"=> [
-                "monday"=>true,
-                "tuesday"=>true,
-                "wednesday"=>true,
-                "thursday"=>true,
-                "saturday"=>true,
-                "friday"=>true,
-                "sunday"=>true,
-                "isNegotiable"=>true,
-                "scheduleRecurringId"=>"1",
-                "startTime"=>"01:00:00",
-                "endTime"=>"03:00:00"
+        $this->json('POST', $this->prefix . "", [
+            "title"           => "Project title",
+            "description"     => "description",
+            "profileImageUrl" => "https://sandwhichi-dev-raw-image.s3.ap-northeast-2.amazonaws.com/11",
+            "startedAt"       => "2017-10-10 12:00:00",
+            "endsAt"          => "2018-11-11 12:00:00",
+            "locationId"      => "1",
+            "schedule"        => [
+                "monday"              => true,
+                "tuesday"             => true,
+                "wednesday"           => true,
+                "thursday"            => true,
+                "saturday"            => true,
+                "friday"              => true,
+                "sunday"              => true,
+                "isNegotiable"        => true,
+                "scheduleRecurringId" => "1",
+                "startTime"           => "01:00:00",
+                "endTime"             => "03:00:00"
             ],
-            "contacts"=>[
+            "contacts"        => [
                 [
-                    "typeId"=>"1",
-                    "information"=>"daniel@good.com"
+                    "typeId"      => "1",
+                    "information" => "daniel@good.com"
                 ]
             ],
-        ],$this->headers)
+            "keywords"        => [
+                "IT",
+                "Food"
+            ],
+            "abilities"       => [
+                "PHP",
+                "Javascript"
+            ],
+        ], $this->headers)
             ->assertResponseStatus(200);
         Auth::logout();
     }
 
-    public function createFailValidate(){
+    public function createFailValidate()
+    {
         // contact, 측 require 요소가 빠짐
-        $this->json('POST', $this->prefix."" , [
-            "title"=>"Project title",
-            "description"=>"description",
+        $this->json('POST', $this->prefix . "", [
+            "title"           => "Project title",
+            "description"     => "description",
             "profileImageUrl" => "https://youtube.com/123",
-            "startedAt"=>"2017-10-10 12:00:00",
-            "endsAt"=>"2018-11-11 12:00:00",
-            "locationId"=>"1",
-            "schedule"=> [
-                "monday"=>true,
-                "tuesday"=>true,
-                "wednesday"=>true,
-                "thursday"=>true,
-                "saturday"=>true,
-                "friday"=>true,
-                "sunday"=>true,
-                "isNegotiable"=>true,
-                "scheduleRecurringId"=>"1",
-                "startTime"=>"01:00:00",
-                "endTime"=>"03:00:00"
+            "startedAt"       => "2017-10-10 12:00:00",
+            "endsAt"          => "2018-11-11 12:00:00",
+            "locationId"      => "1",
+            "schedule"        => [
+                "monday"              => true,
+                "tuesday"             => true,
+                "wednesday"           => true,
+                "thursday"            => true,
+                "saturday"            => true,
+                "friday"              => true,
+                "sunday"              => true,
+                "isNegotiable"        => true,
+                "scheduleRecurringId" => "1",
+                "startTime"           => "01:00:00",
+                "endTime"             => "03:00:00"
             ]
-        ],$this->headers)
+        ], $this->headers)
             ->assertResponseStatus(422);
 
         // 여정 정보가 빠짐
-        $this->json('POST', $this->prefix."" , [
-            "title"=>"Project title",
-            "description"=>"description",
+        $this->json('POST', $this->prefix . "", [
+            "title"           => "Project title",
+            "description"     => "description",
             "profileImageUrl" => "https://youtube.com/123",
-            "locationId"=>"1",
-            "schedule"=> [
-                "monday"=>true,
-                "tuesday"=>true,
-                "wednesday"=>true,
-                "thursday"=>true,
-                "saturday"=>true,
-                "friday"=>true,
-                "sunday"=>true,
-                "isNegotiable"=>true,
-                "scheduleRecurringId"=>"1",
-                "startTime"=>"01:00:00",
-                "endTime"=>"03:00:00"
+            "locationId"      => "1",
+            "schedule"        => [
+                "monday"              => true,
+                "tuesday"             => true,
+                "wednesday"           => true,
+                "thursday"            => true,
+                "saturday"            => true,
+                "friday"              => true,
+                "sunday"              => true,
+                "isNegotiable"        => true,
+                "scheduleRecurringId" => "1",
+                "startTime"           => "01:00:00",
+                "endTime"             => "03:00:00"
             ],
-            "contacts"=>[
+            "contacts"        => [
                 [
-                    "typeId"=>"1",
-                    "information"=>"daniel@good.com"
+                    "typeId"      => "1",
+                    "information" => "daniel@good.com"
                 ]
             ],
-        ],$this->headers)
+        ], $this->headers)
             ->assertResponseStatus(422);
     }
 
-    public function createFailWhenGhost(){
-        $this->json('POST', $this->prefix."" , [
-            "title"=>"Project title",
-            "description"=>"description",
+    public function createFailWhenGhost()
+    {
+        $this->json('POST', $this->prefix . "", [
+            "title"           => "Project title",
+            "description"     => "description",
             "profileImageUrl" => "https://youtube.com/123",
-            "locationId"=>"1",
-            "schedule"=> [
-                "monday"=>true,
-                "tuesday"=>true,
-                "wednesday"=>true,
-                "thursday"=>true,
-                "saturday"=>true,
-                "friday"=>true,
-                "sunday"=>true,
-                "isNegotiable"=>true,
-                "scheduleRecurringId"=>"1",
-                "startTime"=>"01:00:00",
-                "endTime"=>"03:00:00"
+            "locationId"      => "1",
+            "schedule"        => [
+                "monday"              => true,
+                "tuesday"             => true,
+                "wednesday"           => true,
+                "thursday"            => true,
+                "saturday"            => true,
+                "friday"              => true,
+                "sunday"              => true,
+                "isNegotiable"        => true,
+                "scheduleRecurringId" => "1",
+                "startTime"           => "01:00:00",
+                "endTime"             => "03:00:00"
             ],
-            "contacts"=>[
+            "contacts"        => [
                 [
-                    "typeId"=>"1",
-                    "information"=>"daniel@good.com"
+                    "typeId"      => "1",
+                    "information" => "daniel@good.com"
                 ]
             ],
         ])
             ->assertResponseStatus(403);
     }
 
-    public function createFailWhenInactive(){
+    public function createFailWhenInactive()
+    {
         // TODO 회원 인증 구현시 작업
     }
 }

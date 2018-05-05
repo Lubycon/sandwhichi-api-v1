@@ -24,6 +24,10 @@ class ValidatorServiceProvider extends ServiceProvider
             return User::isAvailableEmail($value);
         });
 
+        Validator::extend('availablePassword', function ($attribute, $value, $params, $validator) {
+            return PasswordReset::isAvailable($value);
+        });
+
         Validator::extend('rawImageS3bucketUrl', function ($attribute, $value, $params, $validator) {
             return Media::IsRawImageBucketUrl($value);
         });
