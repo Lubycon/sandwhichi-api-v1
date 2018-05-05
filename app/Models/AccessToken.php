@@ -43,6 +43,7 @@ class AccessToken extends Model
     protected $hidden = ['password'];
     protected $casts = [
         'id' => 'string',
+        'user_id' => 'string',
     ];
 
     public static $randomLength = 50;
