@@ -40,7 +40,9 @@ class ProjectMedia extends Model
 
     public static function ProjectHardSync(Project $project, Array $media){
         $project->mediaList->each(function(ProjectContact $object, $index){
-            $object->media->delete();
+            if($object->media){
+                $object->media->delete();
+            }
             return $object->delete();
         });
 

@@ -38,7 +38,9 @@ class ProjectContact extends Model
 
     public static function ProjectHardSync(Project $project, Array $contacts){
         $project->contactList->each(function(ProjectContact $object, $index){
-            $object->contact->delete();
+            if($object->contact){
+                $object->contact->delete();
+            }
             return $object->delete();
         });
 
