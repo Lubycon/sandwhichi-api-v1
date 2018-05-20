@@ -89,6 +89,7 @@ class ProjectController extends Controller
         ProjectKeyword::ProjectSoftSync($this->project, $request->keywords);
         ProjectAbility::ProjectSoftSync($this->project, $request->abilities);
 
+        $this->project->fresh(['contactList','keywordList','abilityList','mediaList','schedule']);
         return response()->success($this->project);
     }
 
@@ -159,6 +160,7 @@ class ProjectController extends Controller
         ProjectKeyword::ProjectSoftSync($this->project, $request->keywords);
         ProjectAbility::ProjectSoftSync($this->project, $request->abilities);
 
+        $this->project->fresh(['contactList','keywordList','abilityList','mediaList','schedule']);
         return response()->success($this->project);
     }
 }
