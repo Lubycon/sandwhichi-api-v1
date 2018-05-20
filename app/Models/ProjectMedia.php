@@ -45,7 +45,7 @@ class ProjectMedia extends Model
         });
 
         foreach($media as $content){
-            $model = Contact::create([
+            $model = Media::create([
                 'type_id' => $content['typeId'],
                 'url' => Media::S3RawImageParse($content['url']),
             ]);

@@ -92,6 +92,37 @@ class ProjectController extends Controller
         return response()->success($this->project);
     }
 
+    /**
+     * @SWG\Put(
+     *   path="/projects/{project_id}",
+     *   @SWG\Parameter(
+     *     name="project_id",
+     *     description="Project id",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
+     *   summary="project update",
+     *   operationId="project",
+     *   tags={"/Projects"},
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Update Project",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/project/update")
+     *   ),
+     *   @SWG\Parameter(
+     *     type="string",
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA2MjQyNzU2LCJleHAiOjI0OTc3OTA1MTcwMTA5ODg3NTYsIm5iZiI6MTUwNjI0Mjc1NiwianRpIjoiNGFGVDV5VEtlaTdiVDVtWiJ9.AcYrVZBkvIepPi66IGUG0RMHDiv2b93kEEet3Ie0loU",
+     *     required=true
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function update(ProjectUpdateRequest $request, $project_id){
         $this->project = Project::with([
             'contactList','keywordList','abilityList','mediaList','schedule'
