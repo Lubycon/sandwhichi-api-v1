@@ -47,6 +47,21 @@ class ProjectKeyword extends Model
         });
     }
 
+    public static function ProjectSoftSync(Project $project, $keywords){
+        $project->keywordList->each(function(ProjectKeyword $object, $index){
+            $object->delete();
+        });
+        foreach($keywords as $keyword){
+            $keyword_model = Keyword::firstOrCreate([
+                'name' => $keyword,
+            ]);
+            $project->keywordList()->create([
+                "keyword_id" => $keyword_model->id
+            ]);
+        }
+        return true;
+    }
+
     public function keyword(){
         return $this->belongsTo(Keyword::class);
     }

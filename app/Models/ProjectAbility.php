@@ -46,6 +46,21 @@ class ProjectAbility extends Model
         });
     }
 
+    public static function ProjectSoftSync(Project $project, $abilities){
+        $project->abilityList->each(function(ProjectAbility $object, $index){
+            $object->delete();
+        });
+        foreach($abilities as $ability){
+            $ability_model = Ability::firstOrCreate([
+                'name' => $ability,
+            ]);
+            $project->abilityList()->create([
+                "ability_id" => $ability_model->id
+            ]);
+        }
+        return true;
+    }
+
     public function ability(){
         return $this->belongsTo(Ability::class);
     }

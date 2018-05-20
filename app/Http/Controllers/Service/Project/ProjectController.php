@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Service\Project;
 
 // Global
+use App\Http\Requests\Service\Project\ProjectUpdateRequest;
 use App\Models\Ability;
 use App\Models\Contact;
 use App\Models\Keyword;
 use App\Models\Media;
+use App\Models\ProjectAbility;
 use App\Models\ProjectContact;
+use App\Models\ProjectKeyword;
 use App\Models\ProjectMedia;
 use App\Models\Schedule;
 use Log;
@@ -65,7 +68,7 @@ class ProjectController extends Controller
             "started_at" => $request->startedAt,
             "ends_at" => $request->endsAt,
             "location_id" => $request->locationId,
-            "schedule_id" => Schedule::create([
+            "schedule_id" => Schedule::firstOrCreate([
                 "monday" => $request->schedule['monday'],
                 "tuesday" => $request->schedule['tuesday'],
                 "wednesday" => $request->schedule['wednesday'],
@@ -80,42 +83,50 @@ class ProjectController extends Controller
             ])->id,
         ]);
 
-        foreach($request->contacts as $raw_contact){
-            $contact = Contact::create([
-                'type_id' => $raw_contact['typeId'],
-                'information' => $raw_contact['information'],
-            ]);
-            $this->project->contactList()->create(["contact_id" => $contact->id]);
-        }
+        ProjectContact::ProjectHardSync($this->project, $request->contacts);
+        ProjectMedia::ProjectHardSync($this->project, $request->media);
 
-        // TODO keywords, ability sync method
-        foreach($request->keywords as $keyword_name){
-            $keyword = Keyword::firstOrCreate([
-                'name' => $keyword_name,
-            ]);
-            $this->project->keywordList()->create([
-                "keyword_id" => $keyword->id
-            ]);
-        }
+        ProjectKeyword::ProjectSoftSync($this->project, $request->keywords);
+        ProjectAbility::ProjectSoftSync($this->project, $request->abilities);
 
-        foreach($request->abilities as $ability_name){
-            $ability = Ability::firstOrCreate([
-                'name' => $ability_name,
-            ]);
-            $this->project->abilityList()->create([
-                "ability_id" => $ability->id
-            ]);
-        }
+        return response()->success($this->project);
+    }
 
-        if($request->media){
-            foreach($request->media as $raw_media){
-                $media = Media::create([
-                    'type_id' => $raw_media['typeId'],
-                    'url' => Media::S3RawImageParse($raw_media['url']),
-                ]);
-                $this->project->mediaList()->create(["media_id" => $media->id]);
-            }
-        }
+    public function update(ProjectUpdateRequest $request, $project_id){
+        $this->project = Project::with([
+            'contactList','keywordList','abilityList','mediaList','schedule'
+        ])->findOrFail($project_id);
+
+        // TODO remove before update image
+
+        $this->project->update([
+            "title" => $request->title,
+            "description" => json_encode($request->description),
+            "profile_image_url" => Media::S3RawImageParse($request->profileImageUrl),
+            "started_at" => $request->startedAt,
+            "ends_at" => $request->endsAt,
+            "location_id" => $request->locationId,
+            "meeting_address" => $request->meetingAddress,
+            "schedule_id" => Schedule::firstOrCreate([
+                "monday" => $request->schedule['monday'],
+                "tuesday" => $request->schedule['tuesday'],
+                "wednesday" => $request->schedule['wednesday'],
+                "thursday" => $request->schedule['thursday'],
+                "friday" => $request->schedule['friday'],
+                "saturday" => $request->schedule['saturday'],
+                "sunday" => $request->schedule['sunday'],
+                "is_negotiable" => $request->schedule['isNegotiable'],
+                "schedule_recurring_id" => $request->schedule['scheduleRecurringId'],
+                "start_time" => $request->schedule['startTime'],
+                "end_time" => $request->schedule['endTime'],
+            ])->id,
+        ]);
+
+        ProjectContact::ProjectHardSync($this->project, $request->contacts);
+        ProjectMedia::ProjectHardSync($this->project, $request->media);
+
+        ProjectKeyword::ProjectSoftSync($this->project, $request->keywords);
+        ProjectAbility::ProjectSoftSync($this->project, $request->abilities);
 
         return response()->success($this->project);
     }

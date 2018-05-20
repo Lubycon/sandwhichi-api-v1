@@ -37,4 +37,24 @@ class ProjectMedia extends Model
 
     protected $dates = ['deleted_at'];
 
+
+    public static function ProjectHardSync(Project $project, Array $media){
+        $project->mediaList->each(function(ProjectContact $object, $index){
+            $object->media->delete();
+            return $object->delete();
+        });
+
+        foreach($media as $content){
+            $model = Contact::create([
+                'type_id' => $content['typeId'],
+                'url' => Media::S3RawImageParse($content['url']),
+            ]);
+            $project->contactList()->create(["contact_id" => $model->id]);
+        }
+        return true;
+    }
+
+    public function media(){
+        return $this->belongsTo(Media::class,'media_id','id');
+    }
 }

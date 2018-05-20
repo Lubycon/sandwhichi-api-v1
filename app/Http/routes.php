@@ -47,6 +47,10 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => 'projects/'], function () {
         Route::post('', 'Service\Project\ProjectController@create');
+
+        Route::group(['prefix' => '{project_id}/'], function () {
+            Route::put('', 'Service\Project\ProjectController@update');
+        });
     });
 
 

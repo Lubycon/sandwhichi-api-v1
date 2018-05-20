@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereContactId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereProjectId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContacts whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereContactId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereProjectId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProjectContact whereUpdatedAt($value)
  */
 class ProjectContact extends Model
 {
@@ -34,7 +34,25 @@ class ProjectContact extends Model
     ];
 
     use SoftDeletes;
-
     protected $dates = ['deleted_at'];
 
+    public static function ProjectHardSync(Project $project, Array $contacts){
+        $project->contactList->each(function(ProjectContact $object, $index){
+            $object->contact->delete();
+            return $object->delete();
+        });
+
+        foreach($contacts as $contact){
+            $model = Contact::create([
+                'type_id' => $contact['typeId'],
+                'information' => $contact['information'],
+            ]);
+            $project->contactList()->create(["contact_id" => $model->id]);
+        }
+        return true;
+    }
+
+    public function contact(){
+        return $this->belongsTo(Contact::class,'contact_id','id');
+    }
 }
