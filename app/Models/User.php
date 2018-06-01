@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Auth;
 use DB;
 use Illuminate\Database\Eloquent\Builder;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 /**
@@ -92,10 +93,6 @@ class User extends Model implements AuthenticatableContract,
 
     public static $dropUserMaintainDay = 30; // day
 
-    public static function CreateUser($request){
-        return static::create(static::bindSignupData($request));
-    }
-
     public static function bindSigninData($request){
         return [
             "email" => $request->email,
@@ -109,6 +106,35 @@ class User extends Model implements AuthenticatableContract,
             "email_accepted" => $request->emailAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
             "privacy_policy_accepted" => $request->privacyPolicyAccepted,
+        ];
+    }
+
+    public static function CreateUser($request){
+        $signupData = User::bindSignupData($request);
+        return User::create($signupData);
+    }
+
+    public function getProfile(){
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'name' => $this->name,
+            'status' => $this->status,
+            'introduce' => $this->introduce,
+            'emailAccepted' => $this->email_accepted,
+            'termsOfServiceAccepted' => $this->terms_of_service_accepted,
+            'privacyPolicyAccepted' => $this->privacy_policy_accepted,
+            'lastSigninTime' => $this->last_signin_time,
+        ];
+    }
+
+    public function getTokens(){
+        $access_token = JWTAuth::fromUser($this);
+        $auth = JWTAuth::setToken($access_token)->authenticate();
+        $refresh_token = RefreshToken::createToken($access_token);
+        return [
+            'access_token' => $access_token,
+            'refresh_token' => $refresh_token,
         ];
     }
 
