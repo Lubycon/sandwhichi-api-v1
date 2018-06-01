@@ -92,6 +92,10 @@ class User extends Model implements AuthenticatableContract,
 
     public static $dropUserMaintainDay = 30; // day
 
+    public static function CreateUser($request){
+        return static::create(static::bindSignupData($request));
+    }
+
     public static function bindSigninData($request){
         return [
             "email" => $request->email,
